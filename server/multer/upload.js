@@ -1,14 +1,15 @@
 import multer from 'multer';
-import path from 'path'
+import path from 'path';
+import uuid from 'uuid-v4';
 
 
-// Set The Storage Engine
-// const storage = multer.diskStorage({
-//   destination: './public/uploads/',
-//   filename: function(req, file, cb){
-//     cb(null,file.fieldname + '-' + Date.now() +uuid()+ path.extname(file.originalname));
-//   }
-// });
+//Set The Storage Engine
+const storage = multer.diskStorage({
+  destination: './public/uploads/',
+  filename: function(req, file, cb){
+    cb(null,file.fieldname + '-' + Date.now() +uuid()+ path.extname(file.originalname));
+  }
+});
 
 
 // Check File Type
@@ -29,11 +30,11 @@ function checkFileType(file, cb){
 
 // Init Upload
 const upload = multer({
-  storage: multer.memoryStorage(),
+  storage: storage,
   fileSize: 10 * 1024 * 1024, // Maximum file size is 10MB
-  fileFilter: function(req, file, cb){
-    checkFileType(file, cb);
-  }
-}).array('image',6);
+  // fileFilter: function(req, file, cb){
+  //   checkFileType(file, cb);
+  // }
+}).single('image');
 
 export default upload;

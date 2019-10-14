@@ -6,16 +6,9 @@ const cardController = {};
 
 cardController.addToCard = async (req, res, next) => {
   try {
-    // const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
-
-    // if (errors.length>0) {
-    //   res.status(422).json({ errors: errors});
-    //   return;
-    // }
-
-    const { userId, productId } = req.body;
-
-    Product.findOne({ _id: productId }, async (err, data) => {
+    const { _id } = req.body;
+    const {id}=req.params;
+    Product.findById({_id }, async (err, data) => {
       if (err) {
         res.status(422).json({
           success: false,
@@ -26,8 +19,7 @@ cardController.addToCard = async (req, res, next) => {
         return;
       }
       if (data) {
-        data.quantity = 1;
-        const card = new Card({ userId, product: data });
+        const card = new Card({ userId:id, product: data });
 
         await card.save(err => {
           if (err) {
@@ -90,7 +82,7 @@ cardController.getCard = async (req, res, next) => {
   });
 };
 cardController.removeCardProduct = async (req, res) => {
-  const { productId, userId } = req.query;
+  const { productId, userId } = req.params;
   Card.remove(
     { userId, "product._id": ObjectId(productId) },
     async (err, data) => {
@@ -181,6 +173,3 @@ cardController.decrementQuantity = async (req, res) => {
 };
 module.exports = cardController;
 
-/** this ends this file
- * server/controllers/card.controller
- **/

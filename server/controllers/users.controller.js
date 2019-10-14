@@ -2,7 +2,6 @@ import { myValidationResult } from "../utils/util";
 import User from "../models/users";
 const UsersController = {};
 
-
 /* GET*/
 UsersController.getUsers = async (req, res) => {
   await User.find({}, async (err, data) => {
@@ -27,12 +26,13 @@ UsersController.getUsers = async (req, res) => {
     });
   });
 };
+
 UsersController.getUser = async (req, res) => {
   const { id } = req.params;
 
   await User.findById(id)
     .then(response => {
-      response.password="";
+      response.password = "";
       res.status(200).json({
         success: true,
         message: "",
@@ -74,27 +74,24 @@ UsersController.GetAddressData = async (req, res) => {
 };
 UsersController.GetContactInfo = async (req, res) => {
   const { id } = req.params;
- 
-  await User.findOne(
-    { _id: id },
-    async (err, data) => {
-      if (err) {
-        console.log(error);
-        res.status(200).json({
-          success: true,
-          message:
-            "Sorry Something Happened We'll get back to you as soon as possible",
-          error: err
-        });
-      }
-      data.password = "";
+
+  await User.findOne({ _id: id }, async (err, data) => {
+    if (err) {
+      console.log(error);
       res.status(200).json({
         success: true,
-        message: "Sucessfully Edited the Address data",
-        data: {address:data.address,phone:data.phone}
+        message:
+          "Sorry Something Happened We'll get back to you as soon as possible",
+        error: err
       });
     }
-  );
+    data.password = "";
+    res.status(200).json({
+      success: true,
+      message: "Sucessfully Edited the Address data",
+      data: { address: data.address, phone: data.phone }
+    });
+  });
 };
 UsersController.GetPhonesData = async (req, res) => {
   const { id } = req.params;
@@ -116,35 +113,11 @@ UsersController.GetPhonesData = async (req, res) => {
       data: {
         phone_added: data.phone_added,
         phone_verified: data.phone_verified,
-        phone: data.phone,
+        phone: data.phone
       }
     });
   });
 };
-UsersController.GetPaymentInfo = async (req, res) => {
-  /*
-
-    */
-
-  const { id } = req.params;
-  await User.findOne({ _id: id }, async (err, data) => {
-    if (err) {
-      res.status(200).json({
-        success: true,
-        message:
-          "Sorry Something Happened We'll get back to you as soon as possible",
-        error: err
-      });
-    }
-    data.password = "";
-    res.status(200).json({
-      success: true,
-      message: "Sucessfully Edited the Address data",
-      data: data.payment_method
-    });
-  });
-};
-
 
 /*POST */
 
@@ -160,8 +133,10 @@ UsersController.createUser = async (req, res) => {
       });
       return;
     }
-    const { first_name, last_name, email, password } = req.body;
-
+    let { username, email, password, is_admin } = req.body;
+    is_admin = is_admin ? is_admin : false;
+    const { file } = req;
+    const image = `/uploads/${file.filename}`;
     User.findOne({ email }, function(err, data) {
       if (err) {
         res.status(422).json({
@@ -173,7 +148,13 @@ UsersController.createUser = async (req, res) => {
         return;
       }
       if (!data) {
-        const user = new User({ first_name, last_name, email, password });
+        const user = new User({
+          username,
+          email,
+          password,
+          profile_image: image,
+          is_admin
+        });
 
         user.save((err, data) => {
           if (err) {
@@ -188,7 +169,7 @@ UsersController.createUser = async (req, res) => {
           }
         });
       } else {
-        res.send({ Success: "Email is already used." });
+        res.send({ success: false, message: "User already Registered", data });
       }
     });
   } catch (err) {
@@ -200,6 +181,7 @@ UsersController.createUser = async (req, res) => {
     });
   }
 };
+
 UsersController.Login = async (req, res) => {
   const errors = myValidationResult(req).array(); // Finds the validation errors in this request and wraps them in an object with handy functions
   if (errors.length > 0) {
@@ -258,7 +240,14 @@ UsersController.AddAddressData = async (req, res) => {
   const { id } = req.params;
   await User.findOneAndUpdate(
     { _id: id },
-    { $set: { addresses: req.body } },
+    {
+      $set: {
+        address: req.body,
+        address_is_available: true,
+        phone: req.body.phone,
+        phone_added: true
+      }
+    },
     async (err, data) => {
       if (err) {
         console.log(error);
@@ -277,18 +266,6 @@ UsersController.AddAddressData = async (req, res) => {
       });
     }
   );
-};
-UsersController.pushPaymentInfo = async (req, res) => {
-  const payment_card = req.body;
-  const { id } = req.params;
-
-  await User.findById(id)
-    .then(User => {
-      User.payment_cards.push(payment_card);
-      User.save();
-    })
-    .catch(e => console.log(e))
-    .then(res.json({ status: "200" }));
 };
 
 /*PUT */
@@ -387,7 +364,9 @@ UsersController.contactInfo = async (req, res) => {
   const { line, city, country, zip, phone } = req.body;
   await User.findOneAndUpdate(
     { _id: id },
-    { $set: { address: { line, city, country, zip }, phone,phone_added:true} },
+    {
+      $set: { address: { line, city, country, zip }, phone, phone_added: true }
+    },
     async (err, data) => {
       if (err) {
         console.log(error);
@@ -468,22 +447,6 @@ UsersController.editPhonesData = async (req, res) => {
     }
   );
 };
-UsersController.editPaymentInfo = async (req, res) => {
-  const { id } = req.params;
-  const { idcard } = req.params;
-
-  await User.findOneAndUpdate(
-    { _id: id, "payment_cards._id": idcard },
-    { $set: { "payment_cards.$": req.body } }
-  )
-    .then(doc => {
-      res.json({ status: "200" });
-    })
-    .catch(e => {
-      console.log(e);
-    });
-};
-
 
 /* DELETE */
 UsersController.deleteEmails = async (req, res) => {
@@ -546,24 +509,6 @@ UsersController.deleteUser = async (req, res) => {
   await User.findByIdAndRemove(id).then(() => {
     res.json({ status: "200" });
   });
-};
-
-UsersController.deletePaymentCard = async (req, res) => {
-  const { idcard } = req.params;
-  const { id } = req.params;
-
-  await User.update(
-    { _id: id },
-    { $pull: { payment_cards: { _id: idcard } } },
-    { safe: true }
-  )
-    .then(response => {
-      console.log(response);
-    })
-    .catch(e => console.log(e))
-    .then(() => {
-      res.json({ status: "200" });
-    });
 };
 
 module.exports = UsersController;

@@ -28,16 +28,11 @@ app.use(cors());
 /**
  * R O U T E S
  */ 
-app.use('/api-docs',require("./routes/documentation.route"));
 app.use('/api/products', require('./routes/product.routes'));
 app.use('/api/user', require('./routes/users.routes'));
 app.use('/api/cart', require('./routes/card.routes'));
-app.use('/api/checkout', require('./routes/checkout.routes'));
-// app.use('/api/clients', require('./routes/clients.routes'));
-// app.use('/api/suppliers', require('./routes/suppliers.routes'));
-/**
- * S T A R T I N G   S E R V E R
- */
+app.use('/api/order', require('./routes/order.routes'));
+
 
 app.listen(app.get('port'), (error) => {
     if (error)

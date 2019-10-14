@@ -3,8 +3,7 @@ const { Schema } = mongoose;
 var ObjectId = require("mongodb").ObjectID;
 const ClientSchema = new Schema(
   {
-    first_name: { type: String, required: true },
-    last_name: { type: String, required: false },
+    username: { type: String, required: true },
     profile_image:{type:String,requied:false},
     email: { type: String, required: true },
     password: { type: String, required: true },
@@ -20,19 +19,7 @@ const ClientSchema = new Schema(
     phone: { type: String, required: false,default:''},
     phone_verified: { type: Boolean, required: false, default: false },
     phone_added: { type: Boolean, required: false, default: false },
-    payment_method_added: { type: Boolean, requied: false, default: false },
-    payment_method: [
-      {
-        _id:{type:Schema.Types.ObjectId},
-        type: { type: String, requied: true, index: true, trim: true },
-        card_number: { type: String, required: false, index: true, trim: true },
-        expiry_date: { type: Date, requied: false, trim: true },
-        walet_address: { type: String, requied: false },
-        zip: { type: String, trim: false, required: false },
-
-        requied: false
-      }
-    ]
+    is_admin:{type:Boolean,required:false,default:false},
   },
   { timestamps: true, autoIndex: true }
 );
