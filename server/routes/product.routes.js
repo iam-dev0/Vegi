@@ -1,5 +1,4 @@
 import express from "express";
-import { check, validationResult } from 'express-validator';
 import {createProduct} from '../Validator/product.validator'
 import productsController from '../controllers/product.controller'
 import upload from '../multer/upload'
