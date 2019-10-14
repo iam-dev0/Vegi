@@ -13,7 +13,7 @@ import {mongoose} from './database'
 /**
  * S E T T I N G S
  */
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 80);
 app.use(express.static('./public'));
 /**
  * M I D D L E W A R E S
