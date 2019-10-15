@@ -10,7 +10,7 @@ OrderController.addToOrder = async (req, res, next) => {
   try {
     let user;
     const { productList } = req.body;
-
+    productList.map((item)=>console.log(item));
     await User.findById(id)
       .then(response => {
         response.password = "";
