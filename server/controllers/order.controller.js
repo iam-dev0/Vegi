@@ -10,7 +10,6 @@ OrderController.addToOrder = async (req, res, next) => {
   try {
     let user;
     const { productList } = req.body;
-    productList.map((item)=>console.log(item));
     await User.findById(id)
       .then(response => {
         response.password = "";
@@ -19,22 +18,21 @@ OrderController.addToOrder = async (req, res, next) => {
       .catch(err => {
         res.status(400).json({
           success: false,
-          message:
-            "2",
+          message: "2",
           error: err
         });
         return;
       });
 
     if (productList) {
+      productList.map(item => console.log(item));
       const order = new Order({ buyer: user, orderlist: productList });
       console.log(`order :${order}, buyer:${user},productList:${productList}`);
       await order.save(err => {
         if (err) {
           res.status(400).json({
             success: false,
-            message:
-              "1",
+            message: "1",
             error: err
           });
         } else {
@@ -98,7 +96,7 @@ OrderController.removeOrderProduct = async (req, res) => {
       if (data.length) {
         res.status(404).json({
           success: true,
-          message: "Order removed Successfully",
+          message: "Order removed Successfully"
         });
       }
       res.status(200).json({
