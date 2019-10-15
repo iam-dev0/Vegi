@@ -20,7 +20,7 @@ OrderController.addToOrder = async (req, res, next) => {
         res.status(400).json({
           success: false,
           message:
-            "Sorry Something Happened We'll get back to you as soon as possible",
+            "2",
           error: err
         });
         return;
@@ -33,7 +33,7 @@ OrderController.addToOrder = async (req, res, next) => {
           res.status(400).json({
             success: false,
             message:
-              "Sorry Something Happened We'll get back to you as soon as possible",
+              "1",
             error: err
           });
         } else {
