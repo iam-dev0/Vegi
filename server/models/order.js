@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const orderSchema = new Schema(
     {
       buyer:{ type: Object, required: true },
-      orderlist:[{type:Object, required:true}],
+      orderlist:[],
     },
     {timestamps: true, autoIndex: true}
 );
