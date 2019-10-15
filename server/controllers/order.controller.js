@@ -25,10 +25,10 @@ OrderController.addToOrder = async (req, res, next) => {
       });
 
     if (productList) {
-    //  let  orderlist= productList 
+     let  orderlist= productList 
     //  orderlist.map(item => console.log(item));
 
-      const order = new Order({ buyer: user, orderlist:[{sdk:"dsfa",KJJ:"jsdljk"}] });
+      const order = new Order({ buyer: user, orderlist });
       console.log(`order :${order}, buyer:${user},productList:${productList}`);
       await order.save(err => {
         if (err) {
