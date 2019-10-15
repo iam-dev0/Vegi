@@ -28,6 +28,7 @@ OrderController.addToOrder = async (req, res, next) => {
 
     if (productList) {
       const order = new Order({ buyer: user, orderlist: productList });
+      console.log(`order :${order}, buyer:${user},productList:${productList}`);
       await order.save(err => {
         if (err) {
           res.status(400).json({
