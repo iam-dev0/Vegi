@@ -24,7 +24,7 @@
     "coinbase-commerce-node": "^1.0.1",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "express-validator": "^6.1.1",
     "mongoose": "^5.2.7",
     "mongoose-autopopulate": "^0.9.1",
